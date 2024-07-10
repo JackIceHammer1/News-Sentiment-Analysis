@@ -1,7 +1,6 @@
 from textblob import TextBlob
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-import time
 import re
 
 def analyze_sentiment(text):
@@ -38,10 +37,9 @@ def get_sentiment_rating(polarity, subjectivity):
 
 def extract_key_takeaways(text):
     # Tokenize the text
-    words = word_tokenize(text.lower())
-    ogWords = word_tokenize(text)
+    words = word_tokenize(text)
     stop_words = set(stopwords.words('english'))
-    filtered_words = [word for word in words if word.isalnum() and word not in stop_words]
+    filtered_words = [word for word in words if word.isalnum() and word.lower() not in stop_words]
 
     # Define sets for emotional and financial impact words
     emotional_words = {'happy', 'sad', 'excited', 'anxious', 'fear'}
@@ -52,13 +50,13 @@ def extract_key_takeaways(text):
 
     # Regex pattern to match stock ticker symbols (3 or 4 uppercase letters)
     ticker_pattern = re.compile(r'\b[A-Z]{3,4}\b')
+
     # Iterate through filtered words and add relevant ones to key_words set
     for word in filtered_words:
-        if word in emotional_words or any(financial_word in word for financial_word in financial_words):
+        if word.lower() in emotional_words or any(financial_word in word.lower() for financial_word in financial_words):
             key_words.add(word)
         
-    # Check if the word matches the ticker pattern
-    for word in ogWords:
+        # Check if the word matches the ticker pattern
         if ticker_pattern.match(word):
             key_words.add(word)
 
@@ -66,43 +64,26 @@ def extract_key_takeaways(text):
     return list(key_words)[:5]
 
 def main():
-    # Ask user how many pieces of text to analyze
-    num_texts = int(input("How many pieces of text do you want to analyze? "))
-    
-    for i in range(num_texts):
-        if i > 0:
-            print("\nWaiting for 2 seconds before analyzing the next text...")
-            time.sleep(2)
+    # Ask user for the text to analyze
+    print("Please enter the text to analyze (paste multiple paragraphs):")
+    text = input()
 
-        print(f"\nText {i + 1}:")
-        print("Please enter the text to analyze (paste multiple paragraphs and end with '*/'):\n")
+    # Analyze sentiment
+    sentiment = analyze_sentiment(text)
+    polarity_rating, subjectivity_rating = get_sentiment_rating(sentiment.polarity, sentiment.subjectivity)
 
-        # Capture multi-line input until '*/' is detected
-        text_lines = []
-        while True:
-            line = input()
-            if line.strip() == '*/':
-                break
-            text_lines.append(line)
-        
-        text = "\n".join(text_lines)
+    print("\nSentiment Analysis:")
+    print(f"Polarity: {sentiment.polarity} ({polarity_rating})")
+    print(f"Subjectivity: {sentiment.subjectivity} ({subjectivity_rating})")
 
-        # Analyze sentiment
-        sentiment = analyze_sentiment(text)
-        polarity_rating, subjectivity_rating = get_sentiment_rating(sentiment.polarity, sentiment.subjectivity)
-
-        print("\nSentiment Analysis:")
-        print(f"Polarity: {sentiment.polarity} ({polarity_rating})")
-        print(f"Subjectivity: {sentiment.subjectivity} ({subjectivity_rating})")
-
-        # Extract key takeaways
-        key_takeaways = extract_key_takeaways(text)
-        print("\nKey Emotional and Financial Impact Words including Stock Tickers:")
-        if key_takeaways:
-            for j, takeaway in enumerate(key_takeaways, start=1):
-                print(f"{j}. {takeaway}")
-        else:
-            print("No relevant emotional or financial impact words found.")
+    # Extract key takeaways
+    key_takeaways = extract_key_takeaways(text)
+    print("\nKey Emotional and Financial Impact Words including Stock Tickers:")
+    if key_takeaways:
+        for j, takeaway in enumerate(key_takeaways, start=1):
+            print(f"{j}. {takeaway}")
+    else:
+        print("No relevant emotional or financial impact words found.")
 
 if __name__ == "__main__":
     main()
