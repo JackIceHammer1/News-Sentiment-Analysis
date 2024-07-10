@@ -41,23 +41,36 @@ def extract_key_takeaways(text):
     stop_words = set(stopwords.words('english'))
     filtered_words = [word for word in words if word.isalnum() and word.lower() not in stop_words]
 
-    # Define sets for emotional and financial impact words
-    emotional_words = {'happy', 'sad', 'excited', 'anxious', 'fear'}
-    financial_words = {'profit', 'loss', 'revenue', 'investment', 'market'}
+    # Expanded sets for emotional and financial impact words
+    emotional_words = {
+        'happy', 'sad', 'excited', 'anxious', 'fear', 'optimistic', 'pessimistic', 'confident', 'worried',
+        'thrilled', 'disappointed', 'enthusiastic', 'concerned', 'hopeful', 'frustrated', 'angry', 'joyful',
+        'surprised', 'shocked', 'elated', 'depressed', 'relieved', 'tense', 'content'
+    }
+    financial_words = {
+        'profit', 'loss', 'revenue', 'investment', 'market', 'growth', 'decline', 'earnings', 'forecast',
+        'sale', 'purchase', 'expense', 'income', 'debt', 'equity', 'capital', 'dividend', 'merger', 'acquisition',
+        'valuation', 'cost', 'price', 'trend', 'cash', 'assets', 'liabilities', 'return', 'gain', 'drop',
+        'rise', 'fall', 'increase', 'decrease', 'boost', 'cut', 'interest', 'inflation', 'deflation'
+    }
 
     # Initialize a set to store unique key words
     key_words = set()
 
     # Regex pattern to match stock ticker symbols (3 or 4 uppercase letters)
     ticker_pattern = re.compile(r'\b[A-Z]{3,4}\b')
+    encased_ticker_pattern = re.compile(r'\((\b[A-Z]{3,4}\b)\)')
 
     # Iterate through filtered words and add relevant ones to key_words set
     for word in filtered_words:
         if word.lower() in emotional_words or any(financial_word in word.lower() for financial_word in financial_words):
             key_words.add(word)
         
-        # Check if the word matches the ticker pattern
+    # Check if the word matches the ticker pattern
+    for word in words:
         if ticker_pattern.match(word):
+            key_words.add(word)
+        if encased_ticker_pattern.match(word):
             key_words.add(word)
 
     # Convert set to list and return the first 5 unique words
@@ -73,8 +86,17 @@ def summarize_article(text):
 
 def main():
     # Ask user for the text to analyze
-    print("Please enter the text to analyze (paste multiple paragraphs):")
-    text = input()
+    print("Please enter the text to analyze (end input with /./ on a new line):")
+
+    # Read multiple lines of input until the user types /./
+    lines = []
+    while True:
+        line = input()
+        if line == '/./':
+            break
+        lines.append(line)
+
+    text = '\n'.join(lines)
 
     # Analyze sentiment
     sentiment = analyze_sentiment(text)
