@@ -1,6 +1,7 @@
 from textblob import TextBlob
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+import time
 
 def analyze_sentiment(text):
     blob = TextBlob(text)
@@ -22,8 +23,22 @@ def main():
     num_texts = int(input("How many pieces of text do you want to analyze? "))
     
     for i in range(num_texts):
+        if i > 0:
+            print("\nWaiting for 2 seconds before analyzing the next text...")
+            time.sleep(2)
+
         print(f"\nText {i + 1}:")
-        text = input("Please enter the text to analyze: ")
+        print("Please enter the text to analyze (paste multiple paragraphs and end with '*/'):\n")
+
+        # Capture multi-line input until '*/' is detected
+        text_lines = []
+        while True:
+            line = input()
+            if line.strip() == '*/':
+                break
+            text_lines.append(line)
+        
+        text = "\n".join(text_lines)
 
         # Analyze sentiment
         sentiment = analyze_sentiment(text)
