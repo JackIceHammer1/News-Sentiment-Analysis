@@ -63,6 +63,14 @@ def extract_key_takeaways(text):
     # Convert set to list and return the first 5 unique words
     return list(key_words)[:5]
 
+def summarize_article(text):
+    blob = TextBlob(text)
+    sentences = blob.sentences
+    if len(sentences) > 1:
+        return str(sentences[0]) + " " + str(sentences[1])
+    else:
+        return str(sentences[0])
+
 def main():
     # Ask user for the text to analyze
     print("Please enter the text to analyze (paste multiple paragraphs):")
@@ -84,6 +92,11 @@ def main():
             print(f"{j}. {takeaway}")
     else:
         print("No relevant emotional or financial impact words found.")
+
+    # Summarize the article
+    summary = summarize_article(text)
+    print("\nArticle Summary:")
+    print(summary)
 
 if __name__ == "__main__":
     main()
