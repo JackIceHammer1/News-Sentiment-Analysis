@@ -18,20 +18,24 @@ def extract_key_takeaways(text):
     return key_words
 
 def main():
-    # Take user input for the news article
-    article = input("Please enter the news article: ")
+    # Ask user how many pieces of text to analyze
+    num_texts = int(input("How many pieces of text do you want to analyze? "))
+    
+    for i in range(num_texts):
+        print(f"\nText {i + 1}:")
+        text = input("Please enter the text to analyze: ")
 
-    # Analyze sentiment
-    sentiment = analyze_sentiment(article)
-    print("\nSentiment Analysis:")
-    print(f"Polarity: {sentiment.polarity}")
-    print(f"Subjectivity: {sentiment.subjectivity}")
+        # Analyze sentiment
+        sentiment = analyze_sentiment(text)
+        print("\nSentiment Analysis:")
+        print(f"Polarity: {sentiment.polarity}")
+        print(f"Subjectivity: {sentiment.subjectivity}")
 
-    # Extract key takeaways
-    key_takeaways = extract_key_takeaways(article)
-    print("\nKey Takeaways:")
-    for i, takeaway in enumerate(key_takeaways, start=1):
-        print(f"{i}. {takeaway}")
+        # Extract key takeaways
+        key_takeaways = extract_key_takeaways(text)
+        print("\nKey Takeaways:")
+        for j, takeaway in enumerate(key_takeaways, start=1):
+            print(f"{j}. {takeaway}")
 
 if __name__ == "__main__":
     main()
