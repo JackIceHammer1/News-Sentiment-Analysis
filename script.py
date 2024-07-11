@@ -88,7 +88,7 @@ def summarize_article(text):
 
 def main():
     # Ask user for the text to analyze
-    print("Please enter the text to analyze (end input with /./ on a new line):")
+    print("Please enter the text to analyze (end input with /./ on a new line followed by enter):")
 
     # Read multiple lines of input until the user types /./
     lines = []
@@ -115,14 +115,14 @@ def main():
     # Extract key takeaways and stock tickers
     key_takeaways, stock_tickers = extract_key_takeaways_and_tickers(text)
     
-    print("\nKey Emotional and Financial Impact Words:")
+    print("\nKey Emotional and Financial Words:")
     if key_takeaways:
         for j, takeaway in enumerate(key_takeaways, start=1):
             print(f"{j}. {takeaway}")
     else:
-        print("No relevant emotional or financial impact words found.")
+        print("No relevant emotional or financial words found.")
 
-    print("\nMentioned Stock Tickers:")
+    print("\nMentioned Stock Tickers: (BETA)")
     if stock_tickers:
         for ticker in stock_tickers:
             print(f"- {ticker}")
